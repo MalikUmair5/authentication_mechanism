@@ -71,47 +71,67 @@ export const handleOAuthSubmit = async (formData: FormData) => {
 //   }
 // }
 
-
 export async function CreateUser({
+  name,
+  email,
+  ContactNumber,
+  Address,
+  Password,
+}: RegisterUserType): Promise<{ success: boolean; message: string }> {
+  const userData = {
     name,
     email,
     ContactNumber,
     Address,
     Password,
-  }: RegisterUserType): Promise<{ success: boolean; message: string }> {
-    const userData = {
-      name,
-      email,
-      ContactNumber,
-      Address,
-      Password,
-    };
-    const apiUrl = "http://localhost:3000/api/users/create"; // Update with the correct URL if deployed
-  
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-  
-      const result = await response.json();
-  
-      if (response.ok) {
-        return { success: true, message: "User created successfully!" };
-      } else {
-        return {
-          success: false,
-          message: result.error || "Failed to create user due to an unknown error.",
-        };
-      }
-    } catch (error) {
+  };
+  const apiUrl = "http://localhost:3000/api/users/create"; // Update with the correct URL if deployed
+
+  try {
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      return { success: true, message: "User created successfully!" };
+    } else {
       return {
         success: false,
-        message: "Unable to connect to the API. Please try again later.",
+        message:
+          result.error || "Failed to create user due to an unknown error.",
       };
     }
+  } catch (error) {
+    return {
+      success: false,
+      message: "Unable to connect to the API. Please try again later.",
+    };
   }
-  
+}
+
+export async function getUserFromDb({ email }: { email: string }) {
+  const apiUrl = `http://localhost:3000/api/users/fetch?email=${email}`; // Update with the correct URL if deployed
+  console.log(apiUrl);
+  try {
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+    if (response.ok) console.log("Data fetched successfully", result);
+    else if (response.status === 404) console.error(response.statusText);
+    return result;
+  } catch (err) {
+    console.error("Failed to fetch Data", err);
+    return err;
+  }
+}

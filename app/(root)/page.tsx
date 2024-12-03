@@ -7,6 +7,7 @@ import { CreateUser } from "@/lib/actions";
 export default async function Home() {
   const session = await auth();
   if (!session?.user) redirect("/authentication/Login_page");
+  console.log(session);
   if (session?.user) {
     CreateUser({
       name: session.user.name ?? "",
@@ -15,7 +16,7 @@ export default async function Home() {
   }
   return (
     <>
-      <h1 className={"heading"}>Welcome Umair!</h1>
+      <h1 className={"heading"}>Welcome {session.user.name}!</h1>
 
       <form
         action={async () => {

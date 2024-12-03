@@ -11,6 +11,8 @@ import { CreateUser, handleSignupSubmit } from "@/lib/actions";
 import { RegisterUserType } from "@/lib/definations";
 import { useRouter } from "next/router";
 import { redirect } from "next/navigation";
+import { hashPassword } from "@/lib/utils/hashPassword";
+import Link from "next/link";
 type ValidationError = {
   code: string;
   minimum?: number;
@@ -51,7 +53,7 @@ export default function Page() {
         email: formData.get("Email") as string,
         ContactNumber: formData.get("contactNumber") as string,
         Address: formData.get("Address") as string,
-        Password: formData.get("Password") as string,
+        Password: await hashPassword(formData.get("Password") as string),
       };
       let userCreation = CreateUser(userData);
       userCreation.then((response) => {
@@ -116,6 +118,14 @@ export default function Page() {
             <Button name="Next" type={"submit"}>
               <FaArrowRight />
             </Button>
+            <div className="flex justify-center mt-5 gap-5 items-center">
+              <div className="flex justify-start items-center gap-2">
+                <p>Already have an account?</p>
+              </div>
+              <Link href={"/authentication/Login_page"} className="text-blue-500">
+                Login
+              </Link>
+            </div>
           </Form>
           <div className="flex items-center my-6">
             <div className="flex-grow border-t border-gray-300"></div>
