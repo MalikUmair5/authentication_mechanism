@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import User from "@/models/User";
 
+
+export const dynamic = 'force-static' // for Cache-Control (task 3)
+
 export async function GET(req: NextRequest) {
   const url = new URL(req.url);
   let { searchParams } = url;
